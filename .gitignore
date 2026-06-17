@@ -1,0 +1,44 @@
+# Build outputs
+bin/
+obj/
+build/
+dist/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# VS Code local settings
+.vscode/
+
+# .NET
+TestResults/
+*.nupkg
+
+# Node / frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+
+# Java / Kotlin / Gradle
+.gradle/
+*.class
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
