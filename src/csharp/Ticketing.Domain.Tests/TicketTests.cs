@@ -34,4 +34,35 @@ public class TicketTests
 
         Assert.Equal("user-002", ticket.AssigneeUserId);
     }
+	[Theory]
+	[InlineData("")]
+	[InlineData("   ")]
+	public void Constructor_ThrowsWhenTitleIsBlank(string title)
+	{
+		var exception = Assert.Throws<ArgumentException>(() =>
+			new Ticket(
+				id: "ticket-001",
+				title: title,
+				description: "Office printer shows error 51",
+				createdByUserId: "user-001"));
+
+		Assert.Equal("title", exception.ParamName);
+	}
+
+	[Theory]
+	[InlineData("")]
+	[InlineData("   ")]
+	public void AssignTo_ThrowsWhenUserIdIsBlank(string userId)
+	{
+		var ticket = new Ticket(
+			id: "ticket-001",
+			title: "Printer is broken",
+			description: "Office printer shows error 51",
+			createdByUserId: "user-001");
+
+		var exception = Assert.Throws<ArgumentException>(() =>
+			ticket.AssignTo(userId));
+
+		Assert.Equal("userId", exception.ParamName);
+	}
 }
