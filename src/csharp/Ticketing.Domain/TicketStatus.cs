@@ -2,8 +2,8 @@ namespace Ticketing.Domain;
 
 public enum TicketStatus
 {
-    Open,
-    InProgress,
-    Resolved,
-    Closed
+	Open,
+	InProgress,
+	Resolved,
+	Closed
 }

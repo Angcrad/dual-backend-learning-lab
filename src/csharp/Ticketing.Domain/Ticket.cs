@@ -40,11 +40,33 @@ public class Ticket
 
 	public void AssignTo(string userId)
 	{
-		if (string.IsNullOrWhiteSpace(userId))
+		AssigneeUserId = userId;
+		if(string.IsNullOrWhiteSpace(AssigneeUserId))
 		{
 			throw new ArgumentException("Assignee user id cannot be blank.", nameof(userId));
 		}
+	}
 
-		AssigneeUserId = userId;
+	public void ChangeStatus(TicketStatus newStatus)
+	{
+		if (Status == TicketStatus.Open && newStatus != TicketStatus.InProgress)
+		{
+			switch(newStatus)
+			{
+				case TicketStatus.Closed:
+					{
+						throw new InvalidOperationException("Ticket Status cannot go from Open to Closed.");
+					}
+				case TicketStatus.Resolved:
+					{
+						throw new InvalidOperationException("Ticket Status cannot go from Open to Resolved.");
+					}
+			}			
+		}
+		if (Status == TicketStatus.InProgress && newStatus == TicketStatus.Closed)
+		{
+			throw new InvalidOperationException("Ticket Status cannot go from In Progress to Closed.");
+		}
+		Status = newStatus;
 	}
 }
