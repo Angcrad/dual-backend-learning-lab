@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Ticketing.Domain;
 
 public class Ticket
@@ -40,32 +42,83 @@ public class Ticket
 
 	public void AssignTo(string userId)
 	{
-		AssigneeUserId = userId;
-		if(string.IsNullOrWhiteSpace(AssigneeUserId))
+		if (string.IsNullOrWhiteSpace(userId))
 		{
 			throw new ArgumentException("Assignee user id cannot be blank.", nameof(userId));
 		}
+		AssigneeUserId = userId;
 	}
 
 	public void ChangeStatus(TicketStatus newStatus)
 	{
+		string newStatusText = "";
+		string oldStatusText = "";
+		bool errorFlag = false;
+		switch (newStatus)
+		{
+			case TicketStatus.Open:
+				{
+					newStatusText = "Open";
+				}
+				break;
+			case TicketStatus.InProgress:
+				{
+					newStatusText = "In Progress";
+				}
+				break;
+			case TicketStatus.Resolved:
+				{
+					newStatusText = "Resolved";
+				}
+				break;
+			case TicketStatus.Closed:
+				{
+					newStatusText = "Closed";
+				}
+				break;
+		}
+		switch (Status)
+		{
+			case TicketStatus.Open:
+				{
+					oldStatusText = "Open";
+				}
+				break;
+			case TicketStatus.InProgress:
+				{
+					oldStatusText = "In Progress";
+				}
+				break;
+			case TicketStatus.Resolved:
+				{
+					oldStatusText = "Resolved";
+				}
+				break;
+			case TicketStatus.Closed:
+				{
+					oldStatusText = "Closed";
+				}
+				break;
+		}
 		if (Status == TicketStatus.Open && newStatus != TicketStatus.InProgress)
 		{
-			switch(newStatus)
-			{
-				case TicketStatus.Closed:
-					{
-						throw new InvalidOperationException("Ticket Status cannot go from Open to Closed.");
-					}
-				case TicketStatus.Resolved:
-					{
-						throw new InvalidOperationException("Ticket Status cannot go from Open to Resolved.");
-					}
-			}			
+			errorFlag = true;
 		}
-		if (Status == TicketStatus.InProgress && newStatus == TicketStatus.Closed)
+		if (Status == TicketStatus.InProgress && newStatus != TicketStatus.Resolved)
 		{
-			throw new InvalidOperationException("Ticket Status cannot go from In Progress to Closed.");
+			errorFlag = true;
+		}
+		if (Status == TicketStatus.Resolved && newStatus != TicketStatus.Closed)
+		{
+			errorFlag = true;
+		}
+		if (Status == TicketStatus.Closed)
+		{
+			errorFlag = true;
+		}
+		if (errorFlag)
+		{
+			throw new InvalidOperationException($"Ticket Status cannot go from {oldStatusText} to {newStatusText}.");
 		}
 		Status = newStatus;
 	}

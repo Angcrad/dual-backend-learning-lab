@@ -91,4 +91,20 @@ public class TicketTests
 		Assert.Throws<InvalidOperationException>(() =>
 			ticket.ChangeStatus(TicketStatus.Resolved));
 	}
+	[Fact]
+	public void AssignTo_DoesNotChangeAssigneeWhenUserIdIsBlank()
+	{
+		var ticket = new Ticket(
+			id: "ticket-001",
+			title: "Printer is broken",
+			description: "Office printer shows error 51",
+			createdByUserId: "user-001");
+
+		ticket.AssignTo("user-002");
+
+		Assert.Throws<ArgumentException>(() =>
+			ticket.AssignTo(" "));
+
+		Assert.Equal("user-002", ticket.AssigneeUserId);
+	}
 }
