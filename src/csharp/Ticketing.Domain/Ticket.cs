@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Ticketing.Domain;
 
 public class Ticket
@@ -51,75 +49,44 @@ public class Ticket
 
 	public void ChangeStatus(TicketStatus newStatus)
 	{
-		string newStatusText = "";
-		string oldStatusText = "";
-		bool errorFlag = false;
-		switch (newStatus)
-		{
-			case TicketStatus.Open:
-				{
-					newStatusText = "Open";
-				}
-				break;
-			case TicketStatus.InProgress:
-				{
-					newStatusText = "In Progress";
-				}
-				break;
-			case TicketStatus.Resolved:
-				{
-					newStatusText = "Resolved";
-				}
-				break;
-			case TicketStatus.Closed:
-				{
-					newStatusText = "Closed";
-				}
-				break;
-		}
-		switch (Status)
-		{
-			case TicketStatus.Open:
-				{
-					oldStatusText = "Open";
-				}
-				break;
-			case TicketStatus.InProgress:
-				{
-					oldStatusText = "In Progress";
-				}
-				break;
-			case TicketStatus.Resolved:
-				{
-					oldStatusText = "Resolved";
-				}
-				break;
-			case TicketStatus.Closed:
-				{
-					oldStatusText = "Closed";
-				}
-				break;
-		}
-		if (Status == TicketStatus.Open && newStatus != TicketStatus.InProgress)
-		{
-			errorFlag = true;
-		}
-		if (Status == TicketStatus.InProgress && newStatus != TicketStatus.Resolved)
-		{
-			errorFlag = true;
-		}
-		if (Status == TicketStatus.Resolved && newStatus != TicketStatus.Closed)
-		{
-			errorFlag = true;
-		}
-		if (Status == TicketStatus.Closed)
-		{
-			errorFlag = true;
-		}
-		if (errorFlag)
+		string newStatusText = FormatStatus(newStatus);
+		string oldStatusText = FormatStatus(Status);
+		bool isAllowedTransition =
+			(Status == TicketStatus.Open && newStatus == TicketStatus.InProgress) ||
+			(Status == TicketStatus.InProgress && newStatus == TicketStatus.Resolved) ||
+			(Status == TicketStatus.Resolved && newStatus == TicketStatus.Closed);
+		if (!isAllowedTransition)
 		{
 			throw new InvalidOperationException($"Ticket Status cannot go from {oldStatusText} to {newStatusText}.");
 		}
 		Status = newStatus;
+	}
+	private static string FormatStatus(TicketStatus status)
+	{
+		string statusText = "";
+		switch (status)
+		{
+			case TicketStatus.Open:
+				{
+					statusText = "Open";
+				}
+				break;
+			case TicketStatus.InProgress:
+				{
+					statusText = "In Progress";
+				}
+				break;
+			case TicketStatus.Resolved:
+				{
+					statusText = "Resolved";
+				}
+				break;
+			case TicketStatus.Closed:
+				{
+					statusText = "Closed";
+				}
+				break;
+		}
+		return statusText;
 	}
 }
