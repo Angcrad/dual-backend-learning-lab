@@ -65,4 +65,46 @@ public class TicketTests
 
 		Assert.Equal("userId", exception.ParamName);
 	}
+	[Fact]
+	public void ChangeStatus_AllowsOpenToInProgress()
+	{
+		var ticket = new Ticket(
+			id: "ticket-001",
+			title: "Printer is broken",
+			description: "Office printer shows error 51",
+			createdByUserId: "user-001");
+
+		ticket.ChangeStatus(TicketStatus.InProgress);
+
+		Assert.Equal(TicketStatus.InProgress, ticket.Status);
+	}
+
+	[Fact]
+	public void ChangeStatus_RejectsOpenToResolved()
+	{
+		var ticket = new Ticket(
+			id: "ticket-001",
+			title: "Printer is broken",
+			description: "Office printer shows error 51",
+			createdByUserId: "user-001");
+
+		Assert.Throws<InvalidOperationException>(() =>
+			ticket.ChangeStatus(TicketStatus.Resolved));
+	}
+	[Fact]
+	public void AssignTo_DoesNotChangeAssigneeWhenUserIdIsBlank()
+	{
+		var ticket = new Ticket(
+			id: "ticket-001",
+			title: "Printer is broken",
+			description: "Office printer shows error 51",
+			createdByUserId: "user-001");
+
+		ticket.AssignTo("user-002");
+
+		Assert.Throws<ArgumentException>(() =>
+			ticket.AssignTo(" "));
+
+		Assert.Equal("user-002", ticket.AssigneeUserId);
+	}
 }

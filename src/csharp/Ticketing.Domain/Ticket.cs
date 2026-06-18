@@ -44,7 +44,49 @@ public class Ticket
 		{
 			throw new ArgumentException("Assignee user id cannot be blank.", nameof(userId));
 		}
-
 		AssigneeUserId = userId;
+	}
+
+	public void ChangeStatus(TicketStatus newStatus)
+	{
+		string newStatusText = FormatStatus(newStatus);
+		string oldStatusText = FormatStatus(Status);
+		bool isAllowedTransition =
+			(Status == TicketStatus.Open && newStatus == TicketStatus.InProgress) ||
+			(Status == TicketStatus.InProgress && newStatus == TicketStatus.Resolved) ||
+			(Status == TicketStatus.Resolved && newStatus == TicketStatus.Closed);
+		if (!isAllowedTransition)
+		{
+			throw new InvalidOperationException($"Ticket Status cannot go from {oldStatusText} to {newStatusText}.");
+		}
+		Status = newStatus;
+	}
+	private static string FormatStatus(TicketStatus status)
+	{
+		string statusText = "";
+		switch (status)
+		{
+			case TicketStatus.Open:
+				{
+					statusText = "Open";
+				}
+				break;
+			case TicketStatus.InProgress:
+				{
+					statusText = "In Progress";
+				}
+				break;
+			case TicketStatus.Resolved:
+				{
+					statusText = "Resolved";
+				}
+				break;
+			case TicketStatus.Closed:
+				{
+					statusText = "Closed";
+				}
+				break;
+		}
+		return statusText;
 	}
 }
