@@ -1,0 +1,10 @@
+{
+  "id": "ticket-001",
+  "title": "Printer is broken",
+  "description": "Office printer shows error 51",
+  "status": "Open",
+  "createdByUserId": "user-001",
+  "assigneeUserId": null,
+  "tags": ["hardware", "office"],
+  "isUrgent": false
+}
